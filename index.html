@@ -1,57 +1,444 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Taller de Pijamas</title>
-    <!-- Tailwind CSS -->
+    <!-- Viewport optimizado para cubrir toda la pantalla (Notch friendly) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>ODEJEANCRIS | Diseño a Medida</title>
+    <meta name="description" content="Alta Costura & Pijamas de Diseño Exclusivo.">
+
+    <!-- === ENLACES SOCIALES === -->
+    <meta property="og:image" content="https://raw.githubusercontent.com/Yanzsmartwood2025/Odejeancris/7f24278a96c9317c2a87663132d992e3cda0a5fc/assets/imagenes/iconos/link.jpg">
+    <meta property="og:image:type" content="image/jpeg">
+    <meta property="og:type" content="website">
+
+    <!-- === PWA CONFIG (MODO NATIVO) === -->
+    <meta name="theme-color" content="#0a0a0a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+    <!-- Manifest incrustado -->
+    <link rel="manifest" href='data:application/manifest+json,{"name":"ODEJEANCRIS","short_name":"ODEJEANCRIS","start_url":".","display":"standalone","background_color":"#0a0a0a","theme_color":"#0a0a0a","orientation":"portrait","icons":[{"src":"icon.png","sizes":"192x192","type":"image/png"},{"src":"icon.png","sizes":"512x512","type":"image/png"}]}'>
+
+    <!-- FUENTES & TAILWIND -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500&family=Montserrat:wght@400;600;800&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    
     <script>
         tailwind.config = {
             theme: {
                 extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'], display: ['Montserrat', 'sans-serif'] },
                     colors: {
-                        pastel: {
-                            pink: '#fce7f3',
-                            blue: '#e0f2fe',
-                            gray: '#f8fafc'
-                        }
-                    }
+                        dark: { bg: '#0a0a0a', card: '#121212', border: '#2a2a2a' },
+                        brand: { purple: '#A855F7', pink: '#EC4899', accent: '#d946ef' },
+                        whatsapp: '#25D366'
+                    },
+                    backgroundImage: { 'gradient-brand': 'linear-gradient(135deg, #A855F7 0%, #EC4899 100%)' }
                 }
             }
         }
     </script>
-</head>
-<body class="bg-slate-50 text-slate-800 pt-16 font-sans antialiased">
 
-    <!-- Header: Barra superior fija -->
-    <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 h-16 flex items-center justify-center border-b border-slate-100">
-        <h1 class="text-xl font-extrabold text-slate-700 tracking-wide uppercase">Taller de Pijamas</h1>
+    <style>
+        /* Optimización de Scroll y Renderizado */
+        body { 
+            background-color: #050505; 
+            color: #ffffff; 
+            overscroll-behavior-y: none; /* Evita rebote en iOS */
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        /* Ocultar elementos cuando está en modo APP (Standalone) */
+        @media all and (display-mode: standalone) {
+            #install-banner { display: none !important; }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0a0a0a; }
+        ::-webkit-scrollbar-thumb { background: #333; border-radius: 4px; }
+        
+        .text-glow { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        
+        /* INTRO */
+        #intro-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: #000; z-index: 9999;
+            display: flex; align-items: center; justify-content: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s;
+            will-change: opacity; /* Optimización GPU */
+        }
+        #intro-overlay.fade-out { opacity: 0; visibility: hidden; pointer-events: none; }
+        
+        /* Video optimizado */
+        .intro-video { 
+            width: 100%; max-width: 500px; height: auto; 
+            aspect-ratio: 1/1; object-fit: contain; 
+        }
+
+        /* MODAL */
+        #cart-modal {
+            position: fixed; inset: 0; z-index: 5000;
+            background-color: rgba(0,0,0,0.85); backdrop-filter: blur(8px);
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: opacity 0.3s;
+        }
+        #cart-modal.open { opacity: 1; visibility: visible; }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex flex-col relative pb-safe">
+
+    <!-- === 0. INTRO (Splash) - Se elimina para ahorrar batería === -->
+    <div id="intro-overlay">
+        <video id="splash-video" class="intro-video" autoplay muted playsinline preload="auto">
+            <source src="https://raw.githubusercontent.com/Yanzsmartwood2025/Odejeancris/f74333755db94f5f5c6f78a57cd8fdf1b729ad8b/assets/videos/intro.mp4" type="video/mp4">
+        </video>
+    </div>
+
+    <!-- === 0.5 BANNER INSTALAR APP (Solo aparece en Web) === -->
+    <div id="install-banner" class="fixed top-0 left-0 w-full bg-gradient-brand z-[60] text-white py-2 px-4 flex justify-between items-center transform -translate-y-full transition-transform duration-500 shadow-xl">
+        <div class="flex items-center gap-3">
+            <div class="bg-white/20 p-1 rounded-md backdrop-blur-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" /></svg>
+            </div>
+            <span class="text-xs font-bold tracking-wide">Instala ODEJEANCRIS App</span>
+        </div>
+        <button onclick="installApp()" class="bg-black/30 hover:bg-black/50 px-3 py-1 rounded-full text-[10px] font-bold uppercase transition">
+            Instalar
+        </button>
+        <button onclick="closeBanner()" class="absolute -bottom-6 left-1/2 transform -translate-x-1/2 bg-brand-purple text-white rounded-b-lg px-3 py-0.5 text-[10px] shadow-lg">✕</button>
+    </div>
+
+    <!-- === 1. MODAL FACTURA === -->
+    <div id="cart-modal">
+        <div id="cart-content" class="bg-dark-card border border-white/10 w-full max-w-md m-4 rounded-2xl p-6 shadow-2xl relative transform transition-transform scale-95 duration-300">
+            <div class="flex justify-between items-center mb-6 border-b border-white/10 pb-4">
+                <h3 class="font-display text-xl font-bold text-white tracking-wide">Tu Pedido</h3>
+                <button onclick="toggleCart()" class="text-gray-400 hover:text-white">✕</button>
+            </div>
+            <div id="cart-items" class="max-h-60 overflow-y-auto mb-6 space-y-3 pr-2">
+                <p class="text-gray-500 text-center py-4">El carrito está vacío.</p>
+            </div>
+            <div class="flex justify-between items-center mb-6 pt-4 border-t border-white/10">
+                <span class="text-gray-400">Total a Pagar:</span>
+                <span id="cart-total" class="text-2xl font-bold text-brand-purple">$0.00</span>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+                <button onclick="toggleCart()" class="px-4 py-3 rounded-xl border border-white/10 text-gray-300 hover:bg-white/5 transition">Seguir Viendo</button>
+                <button onclick="checkoutWhatsApp()" class="px-4 py-3 rounded-xl bg-gradient-brand text-white font-bold hover:brightness-110 transition flex items-center justify-center gap-2">
+                    <span>Confirmar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- === 2. HEADER === -->
+    <header class="fixed w-full top-0 z-40 bg-black/80 backdrop-blur-lg border-b border-white/10 pt-safe-top">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <!-- LOGO IMAGEN -->
+                <div class="flex-shrink-0 cursor-pointer" onclick="window.scrollTo(0,0)">
+                    <img src="https://raw.githubusercontent.com/Yanzsmartwood2025/Odejeancris/7f24278a96c9317c2a87663132d992e3cda0a5fc/assets/imagenes/iconos/link.jpg" alt="ODEJEANCRIS" class="h-12 w-auto object-contain rounded-sm shadow-md">
+                </div>
+                <div class="flex items-center space-x-5">
+                    <button onclick="toggleCart()" class="relative text-white hover:text-brand-accent transition group p-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
+                        <span id="cart-count" class="absolute top-0 right-0 bg-gradient-brand text-[10px] font-bold h-4 w-4 rounded-full flex items-center justify-center shadow-lg hidden">0</span>
+                    </button>
+                </div>
+            </div>
+        </div>
     </header>
 
-    <!-- Hero: Título de bienvenida -->
-    <section class="text-center py-8 px-4">
-        <h2 class="text-3xl font-bold text-slate-800 mb-2">Comodidad y Estilo</h2>
-        <p class="text-slate-500 text-lg">Descubre nuestra nueva colección</p>
+    <!-- === 3. HERO (CARRUSEL) === -->
+    <section class="relative w-full h-[650px] mt-20 overflow-hidden bg-dark-bg group">
+        <div id="hero-slider" class="absolute inset-0 w-full h-full"></div>
+        <div class="absolute inset-0 bg-black/50 bg-gradient-to-t from-dark-bg via-transparent to-transparent"></div>
+        <div class="absolute inset-0 flex flex-col items-center justify-center text-center px-4 z-10">
+            <h2 class="font-display font-extrabold text-5xl md:text-7xl text-white tracking-widest mb-4 drop-shadow-2xl text-glow animate-pulse">
+                ODEJEAN<span class="text-transparent bg-clip-text bg-gradient-brand">CRIS</span>
+            </h2>
+            <p class="text-gray-200 text-lg md:text-xl font-light tracking-[0.3em] uppercase mb-8 max-w-2xl">
+                Alta Costura & Pijamas de Diseño Exclusivo
+            </p>
+            <button onclick="scrollToProducts()" class="px-8 py-3 bg-white/10 backdrop-blur-md border border-white/20 hover:bg-white hover:text-black text-white font-medium tracking-widest uppercase transition-all duration-300 transform hover:scale-105">
+                Ver Catálogo
+            </button>
+        </div>
     </section>
 
-    <!-- Grid de Productos -->
-    <main class="container mx-auto px-4 pb-20">
-        <!-- El contenido se inyectará aquí mediante JavaScript -->
-        <div id="contenedor-productos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[200px]">
-
+    <!-- === 4. PRODUCTOS (Lazy Loaded) === -->
+    <main id="productos" class="max-w-7xl mx-auto px-4 py-20">
+        <div class="flex flex-col items-center mb-16">
+            <h3 class="font-display text-3xl font-bold text-white uppercase tracking-wider mb-2">Diseños Exclusivos</h3>
+            <div class="h-1 w-24 bg-gradient-brand rounded-full"></div>
         </div>
+        <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8"></div>
     </main>
 
-    <!-- Footer -->
-    <footer class="bg-white border-t border-slate-200 py-8 text-center">
-        <p class="text-sm text-slate-400 mb-4">© 2024 Taller de Pijamas</p>
-        <div class="flex justify-center space-x-6">
-            <a href="#" class="text-slate-500 hover:text-rose-500 transition-colors">Instagram</a>
-            <a href="#" class="text-slate-500 hover:text-blue-500 transition-colors">Facebook</a>
-            <a href="#" class="text-slate-500 hover:text-green-500 transition-colors">WhatsApp</a>
+    <!-- === 5. BOTÓN FLOTANTE WHATSAPP === -->
+    <a href="#" onclick="checkoutWhatsApp()" class="fixed bottom-6 right-6 z-40 group">
+        <div class="absolute inset-0 bg-gradient-brand rounded-full blur opacity-40 group-hover:opacity-100 transition duration-500 animate-pulse"></div>
+        <div class="relative bg-gradient-brand hover:brightness-110 p-4 rounded-full shadow-2xl flex items-center justify-center transition-transform transform group-hover:-translate-y-1">
+            <div class="bg-white rounded-full w-8 h-8 flex items-center justify-center shadow-inner">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-brand-purple" viewBox="0 0 20 20" fill="currentColor">
+                    <path d="M2 3a1 1 0 011-1h2.153a1 1 0 01.986.836l.74 4.435a1 1 0 01-.54 1.06l-1.548.773a11.037 11.037 0 006.105 6.105l.774-1.548a1 1 0 011.059-.54l4.435.74a1 1 0 01.836.986V17a1 1 0 01-1 1h-2C7.82 18 2 12.18 2 5V3z" />
+                </svg>
+            </div>
+            <span id="wa-badge" class="absolute -top-1 -right-1 bg-white text-brand-purple text-xs font-bold h-5 w-5 rounded-full flex items-center justify-center hidden shadow-sm border-2 border-brand-purple">0</span>
+        </div>
+    </a>
+
+    <!-- === 6. FOOTER === -->
+    <footer id="footer" class="bg-black border-t border-white/10 pt-16 pb-8 pb-safe-bottom">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <h4 class="font-display text-white font-bold text-2xl mb-2 tracking-widest">ODEJEANCRIS</h4>
+            <p class="text-gray-500 text-sm mb-10">Confección a medida que define tu esencia.</p>
+            
+            <div class="mb-10">
+                <h5 class="text-gray-400 text-xs uppercase tracking-widest mb-6">Métodos de Pago</h5>
+                <div class="flex justify-center items-end gap-6 flex-wrap">
+                    <div class="flex flex-col items-center gap-2 group opacity-70 hover:opacity-100 transition cursor-default">
+                        <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"><img src="pichincha.png" alt="BP" class="w-full h-full object-contain" loading="lazy"></div>
+                        <span class="text-gray-500 text-[10px] font-medium tracking-wide uppercase">Pichincha</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group opacity-70 hover:opacity-100 transition cursor-default">
+                        <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"><img src="guayaquil.png" alt="BG" class="w-full h-full object-contain" loading="lazy"></div>
+                        <span class="text-gray-500 text-[10px] font-medium tracking-wide uppercase">Guayaquil</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group opacity-70 hover:opacity-100 transition cursor-default">
+                        <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"><img src="deuna.png" alt="D!" class="w-full h-full object-contain" loading="lazy"></div>
+                        <span class="text-gray-500 text-[10px] font-medium tracking-wide uppercase">Deuna</span>
+                    </div>
+                    <div class="flex flex-col items-center gap-2 group opacity-70 hover:opacity-100 transition cursor-default">
+                        <div class="w-12 h-12 bg-white rounded-xl p-1 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform"><img src="peigo.png" alt="Pg" class="w-full h-full object-contain" loading="lazy"></div>
+                        <span class="text-gray-500 text-[10px] font-medium tracking-wide uppercase">Peigo</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 pt-8 flex flex-col gap-2">
+                <p class="text-gray-600 text-xs">&copy; 2026 ODEJEANCRIS. Todos los derechos reservados.</p>
+                <p class="text-[10px] text-gray-700 font-mono">Desarrollado por <span class="text-brand-accent hover:text-white cursor-pointer transition font-bold">Jusn38 Studio</span></p>
+            </div>
         </div>
     </footer>
 
+    <!-- === LÓGICA === -->
+    <script>
+        const TELEFONO_VENTAS = "593962201602"; 
+        
+        // --- 1. GESTIÓN DE INTRO Y PERFORMANCE ---
+        window.addEventListener('load', () => {
+            const intro = document.getElementById('intro-overlay');
+            const video = document.getElementById('splash-video');
+            const banner = document.getElementById('install-banner');
+
+            setTimeout(() => {
+                // Desvanecer
+                intro.classList.add('fade-out');
+                
+                // Mostrar Banner PWA si no está instalada (y si no está en modo standalone)
+                const isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+                if (!isStandalone) {
+                    banner.classList.remove('-translate-y-full');
+                }
+
+                initCarousel();
+                
+                // PERFORMANCE: Eliminar el video del DOM para que no consuma batería
+                setTimeout(() => {
+                    if(video) { video.pause(); video.src = ""; video.load(); }
+                    intro.remove();
+                }, 1000);
+            }, 4000);
+        });
+
+        // --- BANNER PWA LOGIC ---
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+        });
+
+        function installApp() {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                deferredPrompt.userChoice.then((choiceResult) => {
+                    if (choiceResult.outcome === 'accepted') {
+                        closeBanner();
+                    }
+                    deferredPrompt = null;
+                });
+            } else {
+                alert("Para instalar: Pulsa 'Compartir' en tu navegador y busca 'Agregar a Inicio'.");
+            }
+        }
+        function closeBanner() {
+            document.getElementById('install-banner').classList.add('-translate-y-full');
+        }
+
+        // --- DATA ---
+        const products = [
+            { id: 1, name: "Pijama Seda Imperial", price: 45.00, image: "https://placehold.co/600x800/1a1a1a/FFF?text=Seda+Imperial" },
+            { id: 2, name: "Bata Velvet Noir", price: 65.00, image: "https://placehold.co/600x800/222/FFF?text=Velvet+Noir" },
+            { id: 3, name: "Set Encaje Luxury", price: 89.99, image: "https://placehold.co/600x800/111/FFF?text=Encaje+Luxury" },
+            { id: 4, name: "Kimono Satinado", price: 52.50, image: "https://placehold.co/600x800/333/FFF?text=Kimono+Satin" },
+            { id: 5, name: "Pijama Algodón Pima", price: 48.00, image: "https://placehold.co/600x800/151515/FFF?text=Algodon+Pima" },
+            { id: 6, name: "Shorts Lounge Pro", price: 25.00, image: "https://placehold.co/600x800/000/FFF?text=Lounge+Shorts" },
+            { id: 7, name: "Diseño a Medida", price: 100.00, image: "https://placehold.co/600x800/1a1a1a/FFF?text=A+Medida" },
+            { id: 8, name: "Antifaz de Seda", price: 15.00, image: "https://placehold.co/600x800/222/FFF?text=Antifaz" }
+        ];
+
+        const heroImages = [
+            "https://placehold.co/1920x1080/1a1a1a/A855F7?text=Coleccion+2026",
+            "https://placehold.co/1920x1080/000000/EC4899?text=Diseños+A+Medida",
+            "https://placehold.co/1920x1080/111111/FFFFFF?text=Pijamas+Exclusivas"
+        ];
+
+        let cart = [];
+        let currentSlide = 0;
+
+        function renderProducts() {
+            const grid = document.getElementById('product-grid');
+            // PERFORMANCE: agregamos loading="lazy" y decoding="async"
+            grid.innerHTML = products.map(product => `
+                <div class="bg-dark-card rounded-2xl overflow-hidden border border-white/5 hover:border-brand-purple/50 transition-all duration-300 group flex flex-col h-full shadow-lg hover:shadow-purple-900/20">
+                    <div class="relative h-96 overflow-hidden">
+                        <img src="${product.image}" alt="${product.name}" loading="lazy" decoding="async" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black/20 group-hover:bg-transparent transition"></div>
+                    </div>
+                    <div class="p-5 flex flex-col flex-grow relative z-10">
+                        <h3 class="font-display font-bold text-white text-lg mb-1 tracking-wide">${product.name}</h3>
+                        <p class="text-brand-purple font-bold text-xl mb-4">$${product.price.toFixed(2)}</p>
+                        <button onclick="addToCart(${product.id})" class="mt-auto w-full py-3 rounded-lg bg-gradient-brand text-white font-bold uppercase tracking-wider text-sm hover:brightness-110 transition-all active:scale-95 shadow-lg shadow-purple-900/30 flex items-center justify-center gap-2">
+                            <span>Agregar</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function initCarousel() {
+            const container = document.getElementById('hero-slider');
+            // PERFORMANCE: Solo precargar la primera imagen, las demás lazy
+            container.innerHTML = heroImages.map((img, index) => `
+                <img src="${img}" loading="${index === 0 ? 'eager' : 'lazy'}" class="absolute w-full h-full object-cover transition-opacity duration-1000 ${index === 0 ? 'opacity-60' : 'opacity-0'}">
+            `).join('');
+            setInterval(() => {
+                const slides = container.querySelectorAll('img');
+                if(slides.length > 0) {
+                    slides[currentSlide].classList.remove('opacity-60');
+                    slides[currentSlide].classList.add('opacity-0');
+                    currentSlide = (currentSlide + 1) % heroImages.length;
+                    slides[currentSlide].classList.remove('opacity-0');
+                    slides[currentSlide].classList.add('opacity-60');
+                }
+            }, 4000);
+        }
+
+        function addToCart(id) {
+            const item = products.find(p => p.id === id);
+            if (item) {
+                cart.push(item);
+                updateCartUI();
+                const badges = [document.getElementById('cart-count'), document.getElementById('wa-badge')];
+                badges.forEach(b => {
+                    b.classList.add('scale-125');
+                    setTimeout(() => b.classList.remove('scale-125'), 200);
+                });
+            }
+        }
+
+        function updateCartUI() {
+            const count = cart.length;
+            const headerBadge = document.getElementById('cart-count');
+            const waBadge = document.getElementById('wa-badge');
+            
+            [headerBadge, waBadge].forEach(el => {
+                el.innerText = count;
+                el.classList.remove('hidden');
+            });
+
+            const itemsContainer = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            
+            if (count === 0) {
+                itemsContainer.innerHTML = '<p class="text-gray-500 text-center py-4">El carrito está vacío.</p>';
+                totalEl.innerText = "$0.00";
+                return;
+            }
+
+            const summary = {};
+            let total = 0;
+            cart.forEach(p => {
+                if(!summary[p.name]) summary[p.name] = { qty: 0, price: p.price };
+                summary[p.name].qty += 1;
+                total += p.price;
+            });
+
+            itemsContainer.innerHTML = Object.entries(summary).map(([name, data]) => `
+                <div class="flex justify-between items-center bg-white/5 p-3 rounded-lg">
+                    <div class="flex flex-col">
+                        <span class="text-white font-medium text-sm">${name}</span>
+                        <span class="text-gray-400 text-xs">x${data.qty}</span>
+                    </div>
+                    <span class="text-brand-purple font-bold">$${(data.price * data.qty).toFixed(2)}</span>
+                </div>
+            `).join('');
+
+            totalEl.innerText = `$${total.toFixed(2)}`;
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            const content = document.getElementById('cart-content');
+            
+            if (modal.classList.contains('open')) {
+                modal.classList.remove('open');
+                content.style.transform = "scale(0.95)";
+            } else {
+                modal.classList.add('open');
+                content.style.transform = "scale(1)";
+            }
+        }
+
+        function checkoutWhatsApp() {
+            if (cart.length === 0) {
+                alert("Carrito vacío"); return;
+            }
+            const summary = {};
+            let total = 0;
+            cart.forEach(p => {
+                if(!summary[p.name]) summary[p.name] = { qty: 0, sub: 0 };
+                summary[p.name].qty += 1;
+                summary[p.name].sub += p.price;
+                total += p.price;
+            });
+
+            let msg = `👋 Hola *ODEJEANCRIS*.\n\n`;
+            msg += `📋 *DETALLE DEL PEDIDO:*\n`;
+            for (const [name, data] of Object.entries(summary)) {
+                msg += `▫ ${data.qty}x ${name} ($${data.sub.toFixed(2)})\n`;
+            }
+            msg += `\n💰 *TOTAL A PAGAR: $${total.toFixed(2)}*\n\n`;
+            msg += `📍 Solicito datos para transferencia (Pichincha/Guayaquil/Deuna/Peigo).`;
+            
+            window.open(`https://wa.me/${TELEFONO_VENTAS}?text=${encodeURIComponent(msg)}`, '_blank');
+            toggleCart(); 
+        }
+
+        function scrollToProducts() {
+            document.getElementById('productos').scrollIntoView({ behavior: 'smooth' });
+        }
+
+        document.addEventListener('DOMContentLoaded', () => { renderProducts(); });
+    </script>
 </body>
 </html>
