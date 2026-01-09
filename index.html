@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Taller de Pijamas</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        pastel: {
+                            pink: '#fce7f3',
+                            blue: '#e0f2fe',
+                            gray: '#f8fafc'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 text-slate-800 pt-16 font-sans antialiased">
+
+    <!-- Header: Barra superior fija -->
+    <header class="fixed top-0 left-0 w-full bg-white/90 backdrop-blur-sm shadow-sm z-50 h-16 flex items-center justify-center border-b border-slate-100">
+        <h1 class="text-xl font-extrabold text-slate-700 tracking-wide uppercase">Taller de Pijamas</h1>
+    </header>
+
+    <!-- Hero: Título de bienvenida -->
+    <section class="text-center py-8 px-4">
+        <h2 class="text-3xl font-bold text-slate-800 mb-2">Comodidad y Estilo</h2>
+        <p class="text-slate-500 text-lg">Descubre nuestra nueva colección</p>
+    </section>
+
+    <!-- Grid de Productos -->
+    <main class="container mx-auto px-4 pb-20">
+        <!-- El contenido se inyectará aquí mediante JavaScript -->
+        <div id="contenedor-productos" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 min-h-[200px]">
+
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-8 text-center">
+        <p class="text-sm text-slate-400 mb-4">© 2024 Taller de Pijamas</p>
+        <div class="flex justify-center space-x-6">
+            <a href="#" class="text-slate-500 hover:text-rose-500 transition-colors">Instagram</a>
+            <a href="#" class="text-slate-500 hover:text-blue-500 transition-colors">Facebook</a>
+            <a href="#" class="text-slate-500 hover:text-green-500 transition-colors">WhatsApp</a>
+        </div>
+    </footer>
+
+</body>
+</html>
