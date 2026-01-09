@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo - Taller de Pijamas</title>
+    <link href="./dist/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-50 text-gray-900 font-sans antialiased">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm sticky top-0 z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-indigo-600">Taller de Pijamas</h1>
+            <!-- Botón de carrito o menú podría ir aquí -->
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+        <!-- Título de la sección -->
+        <div class="mb-8 text-center">
+            <h2 class="text-3xl font-extrabold text-gray-900">Nuestra Colección</h2>
+            <p class="mt-4 text-lg text-gray-500">Descubre la comodidad y estilo para tu descanso.</p>
+        </div>
+
+        <!-- Grilla de Productos -->
+        <!--
+             Requisitos de Diseño:
+             - Móvil: 1 columna (grid-cols-1)
+             - Tablet: 2 columnas (md:grid-cols-2)
+             - PC/Laptop: 4 columnas (lg:grid-cols-4)
+        -->
+        <div id="lista-productos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+            <!-- Los productos se cargarán aquí dinámicamente -->
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-200 mt-12">
+        <div class="max-w-7xl mx-auto py-8 px-4 text-center text-gray-500">
+            <p>&copy; 2024 Taller de Pijamas. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <script src="./app.js"></script>
+</body>
+</html>
